@@ -5,7 +5,9 @@ using NetTopologySuite.IO.Streams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Threading;
 
 namespace XBase.API.FAO.Services.FAO
 {
@@ -1319,6 +1321,29 @@ namespace XBase.API.FAO.Services.FAO
 			double Lamb_NN_Arr = Math.Round(Lamb_NN * 1000) / 1000;
 			return Lamb_EE_Arr + ";" + Lamb_NN_Arr;
 		}
+
+		/// <summary>
+		/// Download all shapeFiles for species with information about their distribution available
+		/// </summary>
+		public static void DownloadShapeFilesDistribution()
+		{
+			List<string> faoCodes = GetFAOCodesDistributionAvailable();
+
+			foreach (string code in faoCodes)
+			{
+				string urlFAOShapeFile = @"http://www.fao.org/figis/geoserver/species/ows?service=WFS&request=GetFeature&version=1.0.0&typeName=SPECIES_DIST_" + code + "&outputFormat=SHAPE-ZIP&format_options=filename%3AFAO_SPECIES_DIST_" + code + ".zip";
+				WebClient wc = new WebClient();
+				try
+				{
+					Random randomNumberGenrator = new Random();
+					int num = randomNumberGenrator.Next(10) + 1;
+					if (num % 3 == 0) Thread.Sleep(1000);
+					wc.DownloadFile(urlFAOShapeFile, "/temp/speciesShapeFiles/" + code + ".zip");
+				}
+				catch { }
+			}
+		}
+
 		private static IStreamProviderRegistry GetFaoAreasProvider()
 		{
 			Assembly assembly = typeof(ServiceFAO).GetTypeInfo().Assembly;
