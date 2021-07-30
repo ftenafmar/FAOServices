@@ -1,1 +1,0 @@
-http://www.fao.org:80/figis/geoserver/species/ows?service=WFS&request=GetFeature&version=1.0.0&typeName=SPECIES_DIST_ZTP&outputFormat=SHAPE-ZIP&format_options=filename%3AFAO_SPECIES_DIST_ZTP.zip
